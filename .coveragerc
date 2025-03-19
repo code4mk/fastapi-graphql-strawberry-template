@@ -1,0 +1,9 @@
+[run]
+omit =
+    */tests/*
+    */__init__.py
+    */migrations/*
+    */config/* 
+    */middleware/*
+    */celery.py
+    */tasks/*

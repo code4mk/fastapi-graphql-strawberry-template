@@ -1,0 +1,1 @@
+select * from users where id = --sql_var:user_id;

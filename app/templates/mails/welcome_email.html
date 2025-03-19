@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Email</title>
+    <link rel="stylesheet" type="text/css" href="css/mail.css">
+</head>
+<body>
+    <table class="email-container" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <!-- Header -->
+        <tr>
+            <td class="header">
+                <img src="https://avatars.githubusercontent.com/u/27734759?s=200&v=4" alt="Company Logo" class="logo">
+            </td>
+        </tr>
+        
+        <!-- Content -->
+        <tr>
+            <td class="content">
+                <h1 class="welcome_msg">Welcome, {{ name }}!</h1>
+                <p>Thank you for signing up. Please click the button below to activate your account:</p>
+                <a href="{{ activation_link }}" class="button">Activate Account</a>
+                <p class="disclaimer">If you didn't request this, you can safely ignore this email.</p>
+            </td>
+        </tr>
+        
+        <!-- Footer -->
+        <tr>
+            <td class="footer">
+                <div class="social-links">
+                    <a href="https://twitter.com/code4mk">Twitter</a>
+                    <a href="https://facebook.com/code4mk">Facebook</a>
+                    <a href="https://www.linkedin.com/in/code4mk/">LinkedIn</a>
+                </div>
+                <p>© 2024 code4mk. All rights reserved.</p>
+                <p>Dhaka, Bangladesh</p>
+                <p><a href="https://code4mk.org">Privacy Policy</a> | <a href="https://code4mk.org">Unsubscribe</a></p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

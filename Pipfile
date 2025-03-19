@@ -1,0 +1,30 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+strawberry-graphql = {extras = ["debug-server"], version = "*"}
+fastapi = {extras = ["standard"], version = "*"}
+sqlalchemy = "*"
+psycopg2-binary = "*"
+python-jose = "*"
+bcrypt = "*"
+alembic = "*"
+strawberry-ratelimit = "*"
+fastapi-mail = "*"
+beautifulsoup4 = "*"
+premailer = "*"
+celery-redbeat = "*"
+fastapi-pundra = "*"
+
+[dev-packages]
+ruff = "*"
+pre-commit = "*"
+pytest = "*"
+pytest-asyncio = "*"
+httpx = "*"
+pytest-cov = "*"
+
+[requires]
+python_version = "3.12"
