@@ -12,11 +12,7 @@ DB_PORT=5432
 DB_USER="postgres"
 DB_PASSWORD="postgres"
 DB_NAME="david_commissions_test"
-
-SQLALCHEMY_TEST_DATABASE_URL="postgresql://postgres:postgres@localhost:5432/david_commissions_test"
 ```
-
-
 
 
 # Run tests
