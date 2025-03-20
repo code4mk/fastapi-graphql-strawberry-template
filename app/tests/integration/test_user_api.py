@@ -1,69 +1,69 @@
 import json
 from app.models.user import User
 
-# async def test_user_registration_mutation(client):
-#     # First ensure the test user doesn't exist
-#     query = """
-#     mutation {
-#         user_registration(
-#             user: {
-#                 email: "newtest@example.com",
-#                 password: "password123",
-#                 first_name: "Test",
-#                 last_name: "User"
-#             }
-#         ) {
-#             message
-#             user {
-#                 email
-#                 first_name
-#             }
-#         }
-#     }
-#     """
+async def test_user_registration_mutation(client):
+    # First ensure the test user doesn't exist
+    query = """
+    mutation {
+        user_registration(
+            user: {
+                email: "newtest1@example.com",
+                password: "password123",
+                first_name: "Test",
+                last_name: "User"
+            }
+        ) {
+            message
+            user {
+                email
+                first_name
+            }
+        }
+    }
+    """
     
-#     response = client.post(
-#         "/graphql",
-#         json={"query": query}
-#     )
+    response = client.post(
+        "/graphql",
+        json={"query": query}
+    )
     
-#     assert response.status_code == 200
-#     data = response.json()
-#     assert "errors" not in data
-#     assert data["data"]["user_registration"]["message"] == "User registered successfully"
-#     assert data["data"]["user_registration"]["user"]["email"] == "newtest@example.com"
+    assert response.status_code == 200
+    data = response.json()
+    assert "errors" not in data
+    assert data["data"]["user_registration"]["message"] == "User registered successfully"
+    assert data["data"]["user_registration"]["user"]["email"] == "newtest1@example.com"
 
-# def test_user_login_mutation(client, test_user):
-#     query = """
-#     mutation {
-#         user_login(
-#             user: {
-#                 email: "test@example.com",
-#                 password: "password123"
-#             }
-#         ) {
-#             accessToken
-#             refreshToken
-#             tokenType
-#             user {
-#                 email
-#                 firstName
-#                 lastName
-#             }
-#         }
-#     }
-#     """
+def test_user_login_mutation(client):
+    query = """
+    mutation {
+        user_login(
+            user: {
+                email: "newtest1@example.com",
+                password: "password123"
+            }
+        ) {
+            access_token
+            refresh_token
+            token_type
+            user {
+                email
+                first_name
+                last_name
+            }
+        }
+    }
+    """
     
-#     response = client.post(
-#         "/graphql",
-#         json={"query": query}
-#     )
+    response = client.post(
+        "/graphql",
+        json={"query": query}
+    )
     
-#     assert response.status_code == 200
-#     data = response.json()
-#     assert "errors" not in data
-#     assert data["data"]["user_login"]["tokenType"] == "Bearer"
-#     assert data["data"]["user_login"]["user"]["email"] == test_user.email
+    assert response.status_code == 200
+    data = response.json()
+    assert "errors" not in data
+    assert data["data"]["user_login"]["token_type"] == "Bearer"
+    assert data["data"]["user_login"]["user"]["email"] == "newtest1@example.com"
 
 # def test_users_query(client, test_user):
 #     # First, login to get the token

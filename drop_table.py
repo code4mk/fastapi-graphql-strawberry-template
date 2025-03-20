@@ -20,7 +20,13 @@ def import_all_models() -> None:
 import_all_models()
 
 # Define your database URL
-DATABASE_URL = os.getenv("SQLALCHEMY_TEST_DATABASE_URL")
+
+DATABASE_URL = (
+    f"{os.getenv('DB_CONNECTION')}://"
+    f"{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
+    f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/"
+    f"{os.getenv('DB_NAME')}"
+)
 
 # Create an engine
 engine = create_engine(DATABASE_URL)

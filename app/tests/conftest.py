@@ -12,7 +12,12 @@ load_dotenv()
 
 
 # Test database URL
-SQLALCHEMY_TEST_DATABASE_URL = os.getenv("SQLALCHEMY_TEST_DATABASE_URL")
+SQLALCHEMY_TEST_DATABASE_URL = (
+    f"{os.getenv('DB_CONNECTION')}://"
+    f"{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
+    f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/"
+    f"{os.getenv('DB_NAME')}"
+)
 
 # Create test engine
 test_engine = create_engine(SQLALCHEMY_TEST_DATABASE_URL)
@@ -25,6 +30,7 @@ TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_eng
 def setup_test_database():
     # Create all tables
     Base.metadata.create_all(bind=test_engine)
+
     
 
 @pytest.fixture(scope="function")
