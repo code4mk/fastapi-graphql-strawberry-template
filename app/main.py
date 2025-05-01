@@ -1,4 +1,4 @@
-from fastapi import FastAPI, BackgroundTasks, Request
+from fastapi import FastAPI, BackgroundTasks, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
 from app.graphql.schema import schema
@@ -6,7 +6,7 @@ from app.config.cors import CORS_CONFIG
 from app.api import health, root_index
 from app.database.database import get_db_session
 from sqlalchemy.orm import Session
-from fastapi import Depends
+
 
 app = FastAPI()
 
