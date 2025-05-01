@@ -3,6 +3,7 @@ from app.services.user_service import UserService
 from app.graphql.users.user_gql_types import UserListResponse
 from strawberry.types import Info
 
+
 @strawberry.type
 class UserQueryResolvers:
     @strawberry.field

@@ -13,6 +13,7 @@ from app.graphql.users.user_dto import UserRegisterDTO, UserLoginDTO, UserUpdate
 from strawberry.types import Info
 from fastapi_pundra.gql_berry.validation import dto_validation
 
+
 @strawberry.type
 class UserMutationResolvers:
     @strawberry.mutation

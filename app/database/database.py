@@ -27,9 +27,11 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Declarative base class for database models
 Base = declarative_base()
 
+
 # Dependency function to get a database session
 def get_db():  # noqa
     return SessionLocal()
+
 
 # Dependency function to get a database session
 def get_db_session() -> Generator[Session, None, None]:

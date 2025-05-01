@@ -8,7 +8,6 @@ from app.graphql.users.user_gql_types import (
 from app.graphql.users.user_dto import UserRegisterDTO, UserLoginDTO, UserUpdateDTO, UserDeleteDTO
 from datetime import datetime
 from fastapi_pundra.gql_berry.exception import NotFoundError, DuplicateError
-from app.database.database import get_db
 from strawberry.types import Info
 from app.models.user import User
 from fastapi_pundra.common.password import generate_password_hash, compare_hashed_password
@@ -23,11 +22,14 @@ from fastapi_pundra.common.raw_sql.utils import (
 import uuid
 from sqlalchemy.orm import Session
 
+
 class UserService:
     """User service."""
 
     @classmethod
-    async def s_user_registration(cls, info: Info, db: Session, data: UserRegisterDTO) -> UserMutationResponse:
+    async def s_user_registration(
+        cls, info: Info, db: Session, data: UserRegisterDTO
+    ) -> UserMutationResponse:
         """Register a new user."""
         retrieved_user = db.query(User).filter(User.email == data.email).first()
         if retrieved_user:
@@ -99,7 +101,9 @@ class UserService:
         )
 
     @classmethod
-    def s_users(cls, info: Info, db:Session, page: int = 1, per_page: int = 10) -> UserListResponse:
+    def s_users(
+        cls, info: Info, db: Session, page: int = 1, per_page: int = 10
+    ) -> UserListResponse:
         """Get a list of users."""
         query = db.query(User)
 
@@ -116,7 +120,9 @@ class UserService:
         return UserListResponse(**output)
 
     @classmethod
-    def s_raw_sql_users(cls, info: Info, db:Session, page: int = 1, per_page: int = 10) -> UserListResponse:
+    def s_raw_sql_users(
+        cls, info: Info, db: Session, page: int = 1, per_page: int = 10
+    ) -> UserListResponse:
         """Get a list of users."""
         the_sql_content = load_sql_file("users.fetch-all-users")
         result = db.execute(the_sql_content)
@@ -147,7 +153,7 @@ class UserService:
         return UserListResponse(**response_data)
 
     @classmethod
-    def s_user_update(cls, info: Info, db:Session, data: UserUpdateDTO) -> UserMutationResponse:
+    def s_user_update(cls, info: Info, db: Session, data: UserUpdateDTO) -> UserMutationResponse:
         """Update a user."""
         user = db.query(User).filter(User.id == data.id).first()
         if not user:
@@ -171,7 +177,7 @@ class UserService:
         return UserMutationResponse(user=user, message="User updated successfully")
 
     @classmethod
-    def s_user_delete(cls, info: Info, db:Session, data: UserDeleteDTO) -> UserDeleteResponse:
+    def s_user_delete(cls, info: Info, db: Session, data: UserDeleteDTO) -> UserDeleteResponse:
         """Delete a user."""
         user = db.query(User).filter(User.id == data.user_id).first()
         if not user:
