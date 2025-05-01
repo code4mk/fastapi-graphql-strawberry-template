@@ -10,7 +10,7 @@ pytest \
     --cov-report=term-missing \
     --cov-report=html \
     --cov-report=xml \
-    --cov-fail-under=70 \
+    --cov-fail-under=80 \
     --cov-config=.coveragerc \
     -v \
     app/tests/ \
