@@ -21,25 +21,15 @@ from fastapi_pundra.common.raw_sql.utils import (
     raw_sql_paginate_gql,
 )
 import uuid
-
+from sqlalchemy.orm import Session
 
 class UserService:
     """User service."""
 
-    def __init__(self) -> None:
-        """Initialize the user service."""
-        self.db = get_db()
-
-    def __del__(self) -> None:
-        """Close the database session when the service is destroyed."""
-        self.db.close()
-
     @classmethod
-    async def s_user_registration(cls, info: Info, data: UserRegisterDTO) -> UserMutationResponse:
+    async def s_user_registration(cls, info: Info, db: Session, data: UserRegisterDTO) -> UserMutationResponse:
         """Register a new user."""
-        self = cls()
-
-        retrieved_user = self.db.query(User).filter(User.email == data.email).first()
+        retrieved_user = db.query(User).filter(User.email == data.email).first()
         if retrieved_user:
             error_message = f"User with email {data.email} already exists"
             raise DuplicateError(error_message)
@@ -54,9 +44,9 @@ class UserService:
             # new_user.created_at = datetime.now()
             # new_user.updated_at = datetime.now()
 
-            self.db.add(new_user)
-            self.db.commit()
-            self.db.refresh(new_user)
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
 
             # Send welcome email in background
             template_name = "welcome_email.html"
@@ -77,15 +67,13 @@ class UserService:
 
             return UserMutationResponse(user=new_user, message="User registered successfully")
         except Exception:
-            self.db.rollback()
+            db.rollback()
             raise
 
     @classmethod
-    def s_user_login(cls, info: Info, data: UserLoginDTO) -> LoginResponse:
+    def s_user_login(cls, info: Info, db: Session, data: UserLoginDTO) -> LoginResponse:
         """Login a user."""
-        self = cls()  # Create instance to use the managed db session
-
-        user = self.db.query(User).filter(User.email == data.email).first()
+        user = db.query(User).filter(User.email == data.email).first()
         if not user:
             error_message = "Your email or password is incorrect"
             raise NotFoundError(error_message)
@@ -111,11 +99,9 @@ class UserService:
         )
 
     @classmethod
-    def s_users(cls, info: Info, page: int = 1, per_page: int = 10) -> UserListResponse:
+    def s_users(cls, info: Info, db:Session, page: int = 1, per_page: int = 10) -> UserListResponse:
         """Get a list of users."""
-        self = cls()
-
-        query = self.db.query(User)
+        query = db.query(User)
 
         # Example of adding additional data
         def get_additional_data(users: dict) -> dict:
@@ -130,12 +116,10 @@ class UserService:
         return UserListResponse(**output)
 
     @classmethod
-    def s_raw_sql_users(cls, info: Info, page: int = 1, per_page: int = 10) -> UserListResponse:
+    def s_raw_sql_users(cls, info: Info, db:Session, page: int = 1, per_page: int = 10) -> UserListResponse:
         """Get a list of users."""
-        self = cls()
-
         the_sql_content = load_sql_file("users.fetch-all-users")
-        result = self.db.execute(the_sql_content)
+        result = db.execute(the_sql_content)
         users_list = raw_sql_fetch_all(result)
         paginated_data = raw_sql_paginate_gql(users_list, the_page=page, the_per_page=per_page)
 
@@ -163,11 +147,9 @@ class UserService:
         return UserListResponse(**response_data)
 
     @classmethod
-    def s_user_update(cls, info: Info, data: UserUpdateDTO) -> UserMutationResponse:
+    def s_user_update(cls, info: Info, db:Session, data: UserUpdateDTO) -> UserMutationResponse:
         """Update a user."""
-        self = cls()
-
-        user = self.db.query(User).filter(User.id == data.id).first()
+        user = db.query(User).filter(User.id == data.id).first()
         if not user:
             error_message = f"User with id {data.id} not found"
             raise NotFoundError(error_message)
@@ -183,22 +165,20 @@ class UserService:
 
         user.updated_at = datetime.now()  # noqa: DTZ005
 
-        self.db.commit()
-        self.db.refresh(user)
+        db.commit()
+        db.refresh(user)
 
         return UserMutationResponse(user=user, message="User updated successfully")
 
     @classmethod
-    def s_user_delete(cls, info: Info, data: UserDeleteDTO) -> UserDeleteResponse:
+    def s_user_delete(cls, info: Info, db:Session, data: UserDeleteDTO) -> UserDeleteResponse:
         """Delete a user."""
-        self = cls()
-
-        user = self.db.query(User).filter(User.id == data.user_id).first()
+        user = db.query(User).filter(User.id == data.user_id).first()
         if not user:
             error_message = f"User with id {data.user_id} not found"
             raise NotFoundError(error_message)
 
-        self.db.delete(user)
-        self.db.commit()
+        db.delete(user)
+        db.commit()
 
         return UserDeleteResponse(message="User deleted successfully")

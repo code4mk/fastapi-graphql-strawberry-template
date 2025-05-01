@@ -6,12 +6,7 @@ you can add test database credentials to .env file
 
 ```bash
 # Database configuration
-DB_CONNECTION=postgresql
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER="postgres"
-DB_PASSWORD="postgres"
-DB_NAME="david_commissions_test"
+TEST_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/gql_test
 ```
 
 
@@ -32,12 +27,4 @@ You can pass additional pytest arguments to the script:
 
 ```bash
 ./scripts/test.sh -s
-```
-
-# Drop tables
-
-To drop all tables and their data, run the following script:
-
-```bash
-python3 drop_table.py
 ```
