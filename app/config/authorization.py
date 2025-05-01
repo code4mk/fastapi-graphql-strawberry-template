@@ -3,8 +3,7 @@ AUTHORIZATION_ABLE_FIELDS = [
     # Query fields
     "users",
     "s_raw_sql_users",
-
     # Mutation fields
     "user_update",
-    "user_delete"
+    "user_delete",
 ]
