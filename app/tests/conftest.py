@@ -1,47 +1,55 @@
 import pytest
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
-from app.database.database import Base
+from app.database.database import Base, get_db_session
 from app.main import app
-from app.models.user import User
 import os
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
-
 # Test database URL
-SQLALCHEMY_TEST_DATABASE_URL = (
-    f"{os.getenv('DB_CONNECTION')}://"
-    f"{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
-    f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/"
-    f"{os.getenv('DB_NAME')}"
-)
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/gql_test")
 
 # Create test engine
-test_engine = create_engine(SQLALCHEMY_TEST_DATABASE_URL)
+engine = create_engine(TEST_DATABASE_URL)
 
 # Create test SessionLocal
-TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
-
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_test_database():
     # Create all tables
-    Base.metadata.create_all(bind=test_engine)
-
-    
+    Base.metadata.create_all(bind=engine)
+    yield
+    # Drop all tables after all tests
+    Base.metadata.drop_all(bind=engine)
 
 @pytest.fixture(scope="function")
 def db_session():    
     # Create a new session for the test
-    session = TestSessionLocal()
+    session = TestingSessionLocal()
     try:
         yield session
     finally:
         session.close()
 
-@pytest.fixture(scope="function")
-def client():
-    return TestClient(app)
+@pytest.fixture(scope="session")
+def get_app():
+    # Override the get_db_session dependency
+    def override_get_db_session():
+        db = TestingSessionLocal()
+        try:
+            yield db
+        finally:
+            db.close()
+
+    app.dependency_overrides[get_db_session] = override_get_db_session
+    return app
+
+
+@pytest.fixture(scope="session")
+def client(get_app):
+    return TestClient(get_app)
